@@ -6,14 +6,16 @@ if len(argv) != 3:
     print("missing command-line argument")
     exit(1)
 
-## key in dictionary is name of person
-## value is array where indecies mean 0 - AGATC, 1 - AATG, 2 - TATC
+# key in dictionary is name of person
+# value is array of STRs
 base = defaultdict(list)
+
 
 def __main__():
     rst = dna_csv_reader()
     counters = dna_sequence_analizer(rst)
     check_matches(counters)
+
 
 def dna_csv_reader():
     rst = []
@@ -23,43 +25,34 @@ def dna_csv_reader():
         for row in reader:
             if m == 0:
                 m += 1
-                for s in row:
-                    if s != "name":
-                        rst.append(s)
+                rst.extend(row[1:])
             else:
-                n = 0
-                for r in row:
-                    if n != 0:
-                        base[row[0]].append(int(r))
-                    n += 1
-    return rst                
+                for i in range(1, len(row)):
+                    row[i] = int(row[i])
+                base[row[0]] = row[1:]
+    return rst
+
 
 def longest_chain(dna, str):
     chain = 0
     temp = 0
     seq = False
     i = 0
+    n = len(str)
     while i < len(dna):
-        n = 0
-        while n < len(str) and n + i < len(dna):
-            if dna[i + n] == str[n]:
-                bl = True
-                n += 1
-            else:
-                bl = False
-                break
-        if bl:
-            temp += 1
+        if dna[i:i+n] == str:
             seq = True
-            i += len(str)
+            temp += 1
+            i += n
         elif seq:
             seq = False
-            i += 1
             chain = temp if temp > chain else chain
             temp = 0
+            i += 1
         else:
             i += 1
     return chain
+
 
 def dna_sequence_analizer(rst):
     with open(argv[2]) as file:
@@ -69,21 +62,13 @@ def dna_sequence_analizer(rst):
         result.append(longest_chain(reader, el))
     return result
 
+
 def check_matches(counts):
     for name, value in base.items():
-        i = 0
-        tmp = False
-        for el in counts:
-            if el == value[i]:
-                tmp = True
-                i += 1
-            else:
-                tmp = False
-                break
-        if tmp:
+        if value == counts:
             print(name)
-            break
-    if tmp == False:
-         print("No match")
+            exit()
+    print("No match")
+
 
 __main__()
