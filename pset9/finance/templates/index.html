@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+    <header>
+        <div class="content">
+            Detailed infromation about your profile:
+        </div>
+    </header>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Symbol</th>
+                <th scope="col">Amount of shares</th>
+                <th scope="col">Current price</th>
+                <th scope="col">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in own %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ row["symbol"] }}</td>
+                <td>{{ row["amount"]}}</td>
+                <td>{{ row["cur_price"] | usd  }}</td>
+                <td>{{ row["sum"] | usd  }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>CASH</td>
+                <td colspan = "3"></td>
+                <td>{{ cash | usd  }}</td>
+            </tr>
+            <tr>
+                <td>Summary</td>
+                <td colspan = "3"></td>
+                <td>{{ ((own | sum(attribute='sum')) + cash) | usd  }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

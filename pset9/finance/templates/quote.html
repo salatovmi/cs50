@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote
+{% endblock %}
+
+{% block main %}
+    <header>
+        <div class="content">
+            {% if again == True %}
+            No prices for {{ symbol }}. Please try another symbol.
+            {% else %}
+            Please choose symbol for quoting.
+            {% endif %}
+        </div>
+    </header>
+    <form action="/quote" method="post" onSubmit="return check_symbol();">
+        <div class="form-group">
+            <input id="symbol" autocomplete="off" autofocus class="form-control" name="symbol" placeholder="Symbol, Symbol" type="text">
+            <div id="symbol_error" class="form_error hidden">
+                Enter any symbol to quote.
+            </div>
+        </div>
+        <button class="btn btn-dark" style="width: 20%;" type="submit">Quote</button>
+    </form>
+{% endblock %}

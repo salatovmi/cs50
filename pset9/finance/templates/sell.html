@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sell
+{% endblock %}
+
+{% block main %}
+    <header>
+        <div class="content">
+            {% if too_much == True %}
+                You don't have enough shares.
+            {% else %}
+                Please choose symbol for selling.
+            {% endif %}
+        </div>
+    </header>
+    <form action="/sell" method="post" onSubmit="return check_sell_from();">
+        <div class="form-group">
+            <select id="symbol" name="symbol" class="form-control" style="width: 20%;">
+                <option value="Default">Choose symbol</option>
+                {% for row in own %}
+                    <option value="{{ row['symbol'] }}">{{ row["symbol"] }}</option>
+                {% endfor %}
+            </select>
+            <div id="symbol_error" class="form_error hidden">
+                Choose any symbol to sell.
+            </div>
+        </div>
+        <div class="form-group">
+            <input id="shares" autocomplete="off" autofocus class="form-control" name="shares" placeholder="Shares" type="number">
+            <div id="shares_error" class="form_error hidden">
+                Shares shouldn't be empty or less than 0.
+            </div>
+        </div>
+        <button class="btn btn-dark" style="width: 20%;" type="submit">Sell</button>
+    </form>
+{% endblock %}
